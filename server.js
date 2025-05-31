@@ -6,22 +6,27 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post('/check', async (req, res) => {
+app.post("/check", async (req, res) => {
   const token = req.body.token;
-  if (!token) return res.status(400).json({ status: 'error', message: 'No token provided' });
+
+  if (!token) {
+    return res.status(400).json({ status: "異常", message: "トークンがありません" });
+  }
 
   try {
-    const apiRes = await fetch(`https://graph.facebook.com/v18.0/me?fields=id,username`, {
-      headers: { Authorization: `Bearer ${token}` }
+    const apiRes = await fetch(`https://graph.facebook.com/v19.0/me?fields=id,username`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (apiRes.status === 200) {
-      res.json({ status: '正常' });
+      res.json({ status: "正常" });
     } else {
-      res.json({ status: '異常', code: apiRes.status });
+      res.json({ status: "異常", code: apiRes.status });
     }
   } catch (err) {
-    res.json({ status: '異常', error: err.message });
+    res.json({ status: "異常", error: err.message });
   }
 });
 
